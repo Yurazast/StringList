@@ -1,7 +1,5 @@
 #include "string_list.h"
 
-void StringDoReplace(String string, String search, String replace, String position, char** destination, int dest_len);
-void StringReplaceAllOccurrences(char** line, String search, String replace);
 void SwapStrings(char** a, char** b);
 void SelectionSort(char** list);
 
@@ -168,9 +166,17 @@ void StringListReplaceInStrings(char** list, String before, String after)
 		return;
 	}
 
+	const int len = strlen(after) + 1;
 	while (list != NULL)
 	{
-		StringReplaceAllOccurrences(list, before, after);
+		if (strcmp(list[VALUE], before) == 0)
+		{
+			list[VALUE] = (char*) realloc(list[VALUE], sizeof(char) * len);
+			if (list[VALUE] == NULL)
+				return;
+			strcpy_s(list[VALUE], sizeof(char) * len, after);
+		}
+
 		list = (char**) list[NEXT];
 	}
 }
@@ -189,41 +195,12 @@ void StringListPrint(char** list)
 		return;
 	}
 
+	puts("String list:");
 	while (list != NULL)
 	{
-		puts(list[VALUE]);
+		printf("> %s\n", list[VALUE]);
 		list = (char**) list[NEXT];
 	}
-	puts("");
-}
-
-void StringDoReplace(String string, String search, String replace, String position, char** destination, int dest_len)
-{
-	strncpy_s(*destination, dest_len, string, position - string);
-	(*destination)[position - string] = '\0';
-    strncat_s(*destination, dest_len, replace, strlen(replace));
-	strncat_s(*destination, dest_len, position + strlen(search), string + strlen(string) - position + strlen(search));
-}
-
-void StringReplaceAllOccurrences(char** line, String search, String replace)
-{
-	if (*line == NULL || search == NULL || replace == NULL) return;
-
-	char* pos = strstr(*line, search);
-
-	if (pos != NULL)
-	{
-		int len = strlen(*line) + strlen(replace) - strlen(search) + 1;
-		char* new_str = (char*) malloc(sizeof(char) * len);
-		if (new_str == NULL) return;
-
-		StringDoReplace(*line, search, replace, pos, &new_str, len);
-
-		free(*line);
-		*line = new_str;
-
-		StringReplaceAllOccurrences(line, search, replace);
-    }
 }
 
 void SwapStrings(char** a, char** b)
