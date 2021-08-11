@@ -5,7 +5,11 @@ void SelectionSort(char** list);
 
 void StringListInit(char*** list)
 {
-	if (list == NULL) return;
+	if (list == NULL)
+	{
+		puts("Passed NULL instead of address of the list to be initialized");
+		return;
+	}
 
 	if (*list != NULL)
 	{

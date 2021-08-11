@@ -23,68 +23,83 @@ void InputChoice()
 	int choice;
 	printf("Enter your choice: ");
 	scanf_s("%d", &choice);
-	while (choice < 0 || choice > 9)
-	{
-		printf("Wrong choice! Enter again: ");
-		scanf_s("%d", &choice);
-	}
 
 	SelectFunction(choice);
 }
 
 void SelectFunction(const int choice)
 {
-	if (choice == 1)
-		StringListInit(&list);
-	else if (choice == 2)
-		AddStringToList();
-	else if (choice == 3)
-		RemoveStringFromList();
-	else if (choice == 4)
-		printf("Size of list: %d\n", StringListSize(list));
-	else if (choice == 5)
-		PrintPositionOfStringInList();
-	else if (choice == 6)
-		StringListRemoveDuplicates(list);
-	else if (choice == 7)
-		ReplaceStringWithStringInList();
-	else if (choice == 8)
-		StringListSort(list);
-	else if (choice == 9)
-		StringListPrint(list);
-	else
+	switch (choice)
 	{
+	case 1:
+		StringListInit(&list);
+		break;
+	case 2:
+		AddStringToList();
+		break;
+	case 3:
+		RemoveStringFromList();
+		break;
+	case 4:
+		printf("Size of list: %d\n", StringListSize(list));
+		break;
+	case 5:
+		PrintPositionOfStringInList();
+		break;
+	case 6:
+		StringListRemoveDuplicates(list);
+		break;
+	case 7:
+		ReplaceStringWithStringInList();
+		break;
+	case 8:
+		StringListSort(list);
+		break;
+	case 9:
+		StringListPrint(list);
+		break;
+	case 0:
 		StringListDestroy(&list);
 		end = true;
+		break;
+	default:
+		puts("Wrong choice!");
 	}
+}
+
+void InputStringSafe(const char* message, char buffer[][BUFFER_LENGTH])
+{
+	if (buffer == NULL)
+	{
+		puts("Buffer cannot be NULL");
+		return;
+	}
+
+	printf(message);
+	scanf_s(SCANF_BUFFER_SPECIFIER, *buffer, sizeof(*buffer));
+	fseek(stdin, 0, SEEK_END);
 }
 
 void AddStringToList()
 {
-	char buffer[50];
-	printf("Enter string you want to add to the list: ");
-	scanf_s("%49s", buffer, sizeof(buffer));
-	fseek(stdin, 0, SEEK_END);
+	char buffer[BUFFER_LENGTH];
+	InputStringSafe("Enter string you want to add to the list: ", &buffer);
 
 	StringListAdd(list, buffer);
 }
 
 void RemoveStringFromList()
 {
-	char buffer[50];
-	printf("Enter string you want to remove from the list: ");
-	scanf_s("%49s", buffer, sizeof(buffer));
-	fseek(stdin, 0, SEEK_END);
+	char buffer[BUFFER_LENGTH];
+	InputStringSafe("Enter string you want to remove from the list: ", &buffer);
 
 	StringListRemove(&list, buffer);
 }
 
 void PrintPositionOfStringInList()
 {
-	char buffer[50];
-	printf("Enter string you want to find in the list: ");
-	scanf_s("%49s", buffer, sizeof(buffer));
-	fseek(stdin, 0, SEEK_END);
+	char buffer[BUFFER_LENGTH];
+	InputStringSafe("Enter string you want to find in the list: ", &buffer);
 
 	int index;
 	if ((index = StringListIndexOf(list, buffer)) != -1)
@@ -95,14 +110,9 @@ void PrintPositionOfStringInList()
 
 void ReplaceStringWithStringInList()
 {
-	char before[50], after[50];
-	printf("Enter string you want to replace in the list: ");
-	scanf_s("%49s", before, sizeof(before));
-	fseek(stdin, 0, SEEK_END);
-
-	printf("Enter string you want to replace it with: ");
-	scanf_s("%49s", after, sizeof(after));
-	fseek(stdin, 0, SEEK_END);
+	char before[BUFFER_LENGTH], after[BUFFER_LENGTH];
+	InputStringSafe("Enter string you want to replace in the list: ", &before);
+	InputStringSafe("Enter string you want to replace it with: ", &after);
 	
 	StringListReplaceInStrings(list, before, after);
 }
