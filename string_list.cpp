@@ -19,14 +19,27 @@ void StringListInit(char*** list)
 
 	*list = (char**) malloc(sizeof(char*) * 2);
 	if (*list == NULL)
+	{
+		puts("Memory allocation problem");
 		exit(1);
+	}
 	(*list)[0] = NULL;
 	(*list)[1] = NULL;
 }
 
 void StringListDestroy(char*** list)
 {
-	if (list == NULL || *list == NULL) return;
+	if (list == NULL)
+	{
+		puts("Passed NULL instead of address of the list to be destroyed");
+		return;
+	}
+
+	if (*list == NULL)
+	{
+		puts("String list is already destroyed");
+		return;
+	}
 
 	char** next_ptr;
 	do
@@ -50,7 +63,10 @@ void StringListAdd(char** list, String str)
 
 	char* new_str = (char*) malloc(sizeof(char) * strlen(str) + 1);
 	if (new_str == NULL)
+	{
+		puts("Cannot allocate memory for new string");
 		return;
+	}
 	strcpy_s(new_str, sizeof(char) * (strlen(str) + 1), str);
 
 	if (list[VALUE] == NULL)
@@ -62,6 +78,7 @@ void StringListAdd(char** list, String str)
 	char** new_el = (char**) malloc(sizeof(char*) * 2);
 	if (new_el == NULL)
 	{
+		puts("Cannot allocate memory for new list element");
 		free(new_str);
 		return;
 	}
@@ -122,7 +139,11 @@ int StringListSize(char** list)
 
 int StringListIndexOf(char** list, String str)
 {
-	if (list == NULL || list[VALUE] == NULL) return -1;
+	if (list == NULL || list[VALUE] == NULL)
+	{
+		puts("String list is not initialized or is empty");
+		return -1;
+	}
 
 	int i = 0;
 	for ( ; list != NULL; list = (char**) list[NEXT])
@@ -138,7 +159,11 @@ int StringListIndexOf(char** list, String str)
 
 void StringListRemoveDuplicates(char** list)
 {
-	if (StringListSize(list) < 2) return;
+	if (StringListSize(list) < 2)
+	{
+		puts("String list size is less then 2");
+		return;
+	}
 
 	for (char** el_to_cmp = list; el_to_cmp != NULL && el_to_cmp[NEXT] != NULL; el_to_cmp = (char**) el_to_cmp[NEXT])
 	{
@@ -177,7 +202,10 @@ void StringListReplaceInStrings(char** list, String before, String after)
 		{
 			list[VALUE] = (char*) realloc(list[VALUE], sizeof(char) * len);
 			if (list[VALUE] == NULL)
+			{
+				puts("Cannot reallocate memory for string");
 				return;
+			}
 			strcpy_s(list[VALUE], sizeof(char) * len, after);
 		}
 
@@ -187,7 +215,11 @@ void StringListReplaceInStrings(char** list, String before, String after)
 
 void StringListSort(char** list)
 {
-	if (StringListSize(list) < 2) return;
+	if (StringListSize(list) < 2)
+	{
+		puts("String list size is less then 2");
+		return;
+	}
 	SelectionSort(list);
 }
 
